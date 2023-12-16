@@ -1,6 +1,5 @@
 @GonToDoApi_HostAddress = http://localhost:5283
 
-GET {{GonToDoApi_HostAddress}}/weatherforecast/
 Accept: application/json
 
 ###

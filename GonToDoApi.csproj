@@ -18,6 +18,13 @@
 
   <ItemGroup>
     <Folder Include="Controllers\" />
+    <Folder Include="Core\Attribute\" />
+    <Folder Include="Core\Controllers\" />
+    <Folder Include="Core\Interface\" />
+    <Folder Include="Core\Models\" />
+    <Folder Include="Core\Services\" />
+    <Folder Include="Models\" />
+    <Folder Include="Services\" />
   </ItemGroup>
 
 </Project>
