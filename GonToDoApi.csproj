@@ -17,7 +17,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Controllers\" />
+    <Folder Include="Core\Attribute\" />
+    <Folder Include="Core\Interface\" />
   </ItemGroup>
 
 </Project>
