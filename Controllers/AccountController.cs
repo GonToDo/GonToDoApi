@@ -5,23 +5,48 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace GonToDoApi.Controllers;
 
-[Route("api/[controller]")]
+[Route("[controller]/[action]")]
 [ApiController]
 public class AccountController(AccountService service) : ControllerBase
 {
-    // GET: api/Product
     [HttpGet]
     public async Task<IActionResult> GetAll()
     {
-        var accounts = await service.GetAllAsync();
-        return Ok(accounts);
-    }
+        var accountModels = await service.GetAll();
+        return Ok(new Result("Success","Lấy toàn thông tin thành công.", new {accountModels}));
+    }    
     
-    // POST api/CategoryController
-    [HttpPost]
-    public async Task<IActionResult> Post(AccountModel model)
+    [HttpGet("{id}")]
+    public async Task<IActionResult> Get(string id)
     {
-        await service.Create(model);
-        return Ok("created successfully");
+        var accountModel = await service.GetById(id);
+        return Ok(new Result("Success","Lấy thông tin thành công.", new {accountModel}));
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> Register(AccountModel.RegisterModel registerModel)
+    {
+        if (await service.CheckIfNameExists(registerModel.UserName))
+        {
+            var accountModel = new AccountModel
+            {
+                FullName = registerModel.FullName,
+                UserName = registerModel.UserName,
+                Password = registerModel.Password
+            };
+
+            await service.Create(accountModel);
+            return Ok(new Result("Success","Tạo thành công.", new {accountModel}));
+        }
+        return BadRequest(new Result("Error","Tên đăng nhập đã tồn tại."));
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> Login(AccountModel.LoginModel loginModel)
+    {
+        var accountModel = await service.FindByName(loginModel.UserName);
+        if (await service.CheckPassword(accountModel, loginModel.Password))
+            return Ok(new Result("Success","Đăng nhập thành công.", new {accountModel}));
+        return BadRequest(new Result("Error","Tên đăng nhập hoặc mật khẩu không đúng."));
     }
 }

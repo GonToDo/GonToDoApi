@@ -7,7 +7,7 @@ namespace GonToDoApi.Core.Elements;
 public abstract class Service<TCollection>
     where TCollection : class
 {
-    protected readonly IMongoCollection<TCollection> collection;
+    public readonly IMongoCollection<TCollection> collection;
     protected readonly IOptions<DataBaseSettings> dbSettings;
 
     /// <summary>
