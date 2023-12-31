@@ -5,23 +5,61 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace GonToDoApi.Controllers;
 
-[Route("api/[controller]")]
+[Route("[controller]/[action]")]
 [ApiController]
 public class AccountController(AccountService service) : ControllerBase
 {
-    // GET: api/Product
     [HttpGet]
     public async Task<IActionResult> GetAll()
     {
-        var accounts = await service.GetAllAsync();
-        return Ok(accounts);
+        var accountModels = await service.GetAll();
+        return Ok(new Root("Thành công", "Lấy toàn thông tin thành công.", new { accountModels }));
     }
-    
-    // POST api/CategoryController
-    [HttpPost]
-    public async Task<IActionResult> Post(AccountModel model)
+
+    [HttpGet("{id}")]
+    public async Task<IActionResult> Get(string id)
     {
-        await service.Create(model);
-        return Ok("created successfully");
+        var accountModel = await service.GetById(id);
+        return Ok(new Root("Thành công", "Lấy thông tin thành công.", new { accountModel }));
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> Register(string fullName, string userName, string password)
+    {
+        if (await service.CheckIfNameExists(userName))
+        {
+            var accountModel = new AccountModel
+            {
+                FullName = fullName,
+                UserName = userName,
+                Password = password
+            };
+
+            await service.Create(accountModel);
+            return Ok(new Root("Thành công", "Tạo thành công.", new { accountModel }));
+        }
+
+        return Conflict(new Root("Xung đột", "Tên đăng nhập đã tồn tại."));
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> Login(string userName, string password)
+    {
+        var accountModel = await service.FindByName(userName);
+        if (await AccountService.CheckPassword(accountModel, password))
+            return Ok(new Root("Thành công", "Đăng nhập thành công.", new { accountModel }));
+        return Unauthorized(new Root("Không được phép", "Tên đăng nhập hoặc mật khẩu không đúng."));
+    }
+
+
+    [HttpPut("{id}")]
+    public async Task<IActionResult> Update(string id, [FromBody] AccountModel accountModel)
+    {
+        var model = await service.GetById(id);
+
+        // ReSharper disable once ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract
+        if (model == null) return BadRequest(new Root("Yêu cầu không hợp lệ", "Yêu cầu không hợp lệ"));
+        await service.Update(id, accountModel);
+        return Ok(new Root("Thành công", "Đăng nhập thành công."));
     }
 }

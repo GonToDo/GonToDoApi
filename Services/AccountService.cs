@@ -13,9 +13,48 @@ public class AccountService(IOptions<DataBaseSettings> dbSettings) : Service<Acc
         return dbSettings.Value.AccountCollectionName;
     }
 
-    public async Task<IEnumerable<AccountModel>> GetAllAsync()=>
-        await collection.Find(_ => true).ToListAsync();
-    
-    public async Task Create(AccountModel model) =>
-        await collection.InsertOneAsync(model);
+    public async Task<IEnumerable<AccountModel>> GetAll()
+    {
+        return await collection.Find(_ => true).ToListAsync();
+    }
+
+    public async Task<AccountModel> GetById(string id)
+    {
+        var filter = Builders<AccountModel>.Filter.Eq(m => m.Id, id);
+        return await collection.Find(filter).FirstOrDefaultAsync();
+    }
+
+    public async Task Create(AccountModel accountModel)
+    {
+        await collection.InsertOneAsync(accountModel);
+    }
+
+    public async Task<AccountModel> FindByName(string? userName)
+    {
+        var filter = Builders<AccountModel>.Filter.Eq(m => m.UserName, userName);
+        return await collection.Find(filter).FirstOrDefaultAsync();
+    }
+
+    public static Task<bool> CheckPassword(AccountModel accountModel, string? password)
+    {
+        return Task.FromResult(accountModel.Password == password);
+    }
+
+    public async Task Update(string id, AccountModel accountModel)
+    {
+        await collection.ReplaceOneAsync(a => a.Id == id, accountModel);
+    }
+
+
+    /// <summary>
+    ///     userName not existed yet => true
+    /// </summary>
+    /// <param name="userName"></param>
+    /// <returns></returns>
+    public async Task<bool> CheckIfNameExists(string? userName)
+    {
+        var filter = Builders<AccountModel>.Filter.Eq(m => m.UserName, userName);
+        var user = await collection.Find(filter).FirstOrDefaultAsync();
+        return user == null;
+    }
 }

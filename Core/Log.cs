@@ -1,25 +1,11 @@
-using GonToDoApi.Core.Patterns;
-
 namespace GonToDoApi.Core;
 
-public class Log : SingletonBase<Log>
+public static class Log
 {
     private const ConsoleColor InformationColor = ConsoleColor.White;
     private const ConsoleColor SuccessColor = ConsoleColor.Green;
     private const ConsoleColor WarningColor = ConsoleColor.Yellow;
     private const ConsoleColor ErrorColor = ConsoleColor.Red;
-
-    protected virtual string Title()
-    {
-        return "Log";
-    }
-
-    public static bool IsDevelopment = false;
-
-    protected virtual bool NoAllowWrite()
-    {
-        return false;
-    }
 
     private static string GetDateTime()
     {
@@ -28,11 +14,9 @@ public class Log : SingletonBase<Log>
 
     public static void WriteLine(string message, ConsoleColor color = ConsoleColor.Gray)
     {
-        if (Instance.NoAllowWrite() && IsDevelopment) return;
-
         var previousColor = Console.ForegroundColor;
         Console.ForegroundColor = color;
-        Console.WriteLine($">>[{Instance.Title()}]({GetDateTime()})-{message}.");
+        Console.WriteLine($"({GetDateTime()})-{message}.");
         Console.ForegroundColor = previousColor;
     }
 
@@ -52,6 +36,7 @@ public class Log : SingletonBase<Log>
     {
         WriteLine($"(Information): {message}", InformationColor);
     }
+
     /// <summary>
     ///     Show Information(White Color) In Debug Output
     /// </summary>
@@ -60,6 +45,7 @@ public class Log : SingletonBase<Log>
     {
         Information(message);
     }
+
     /// <summary>
     ///     Show Information(White Color) In Debug Output
     /// </summary>
@@ -69,7 +55,6 @@ public class Log : SingletonBase<Log>
         Information(message);
     }
 
-
     /// <summary>
     ///     Show Success(Green Color) In Debug Output
     /// </summary>
@@ -78,6 +63,7 @@ public class Log : SingletonBase<Log>
     {
         WriteLine($"(Success): {message}", SuccessColor);
     }
+
     /// <summary>
     ///     Show Success(Green Color) In Debug Output
     /// </summary>
@@ -95,6 +81,7 @@ public class Log : SingletonBase<Log>
     {
         WriteLine($"(Warning): {message}", WarningColor);
     }
+
     /// <summary>
     ///     Show Warning(Yellow Color) In Debug Output
     /// </summary>
@@ -103,7 +90,7 @@ public class Log : SingletonBase<Log>
     {
         Warning(message);
     }
-    
+
     /// <summary>
     ///     Show Error(Red Color) In Debug Output
     /// </summary>
@@ -112,6 +99,7 @@ public class Log : SingletonBase<Log>
     {
         WriteLine($"(Error): {message}", ErrorColor);
     }
+
     /// <summary>
     ///     Show Error(Red Color) In Debug Output
     /// </summary>
