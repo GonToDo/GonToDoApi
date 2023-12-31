@@ -1,8 +1,6 @@
-using Microsoft.AspNetCore.Mvc.Infrastructure;
-
 namespace GonToDoApi.Core;
 
-public class Result(string status, string message, object? data = null)
+public class Root(string status, string message, object? data = null)
 {
     public string Status { get; set; } = status;
     public string Message { get; set; } = message;

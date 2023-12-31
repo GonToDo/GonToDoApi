@@ -1,6 +1,5 @@
 using GonToDoApi.Core;
 using GonToDoApi.Core.DataBase;
-using GonToDoApi.Core.Elements;
 using GonToDoApi.Services;
 
 namespace GonToDoApi;
@@ -24,14 +23,12 @@ public abstract class Program
 
         builder.Services.AddTransient<AccountService>();
 
-        
         var app = builder.Build();
 
         // Configure the HTTP request pipeline.
         if (app.Environment.IsDevelopment())
         {
-            Log.IsDevelopment = true;
-            DebugLog.Warning("IsDevelopment");
+            Log.Warning("IsDevelopment");
 
             app.UseSwagger();
             app.UseSwaggerUI();

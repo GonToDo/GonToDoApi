@@ -20,24 +20,31 @@ public class AccountService(IOptions<DataBaseSettings> dbSettings) : Service<Acc
 
     public async Task<AccountModel> GetById(string id)
     {
-        return await collection.Find(a => a.Id == id).FirstOrDefaultAsync();
+        var filter = Builders<AccountModel>.Filter.Eq(m => m.Id, id);
+        return await collection.Find(filter).FirstOrDefaultAsync();
     }
 
-    public async Task Create(AccountModel model)
+    public async Task Create(AccountModel accountModel)
     {
-        await collection.InsertOneAsync(model);
+        await collection.InsertOneAsync(accountModel);
     }
 
     public async Task<AccountModel> FindByName(string? userName)
     {
-        var filter = Builders<AccountModel>.Filter.Eq("UserName", userName);
+        var filter = Builders<AccountModel>.Filter.Eq(m => m.UserName, userName);
         return await collection.Find(filter).FirstOrDefaultAsync();
     }
 
-    public async Task<bool> CheckPassword(AccountModel model, string? password)
+    public static Task<bool> CheckPassword(AccountModel accountModel, string? password)
     {
-        return model.Password == password;
+        return Task.FromResult(accountModel.Password == password);
     }
+
+    public async Task Update(string id, AccountModel accountModel)
+    {
+        await collection.ReplaceOneAsync(a => a.Id == id, accountModel);
+    }
+
 
     /// <summary>
     ///     userName not existed yet => true

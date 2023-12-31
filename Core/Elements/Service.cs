@@ -10,18 +10,18 @@ public abstract class Service<TCollection>
     public readonly IMongoCollection<TCollection> collection;
     protected readonly IOptions<DataBaseSettings> dbSettings;
 
-    /// <summary>
-    ///  return dbSettings.Value.[CollectionName]
-    /// </summary>
-    /// <returns></returns>
-    protected abstract string? GetCollectionName();
-
     protected Service(IOptions<DataBaseSettings> dbSettings)
     {
         this.dbSettings = dbSettings;
-        var mongoClient = new MongoClient(dbSettings.Value.ConnectionString);
+        var mongoClient = new MongoClient(dbSettings.Value.ConnectionUrl);
         var mongoDatabase = mongoClient.GetDatabase(dbSettings.Value.DataBaseName);
-        
+
         collection = mongoDatabase.GetCollection<TCollection>(GetCollectionName());
     }
+
+    /// <summary>
+    ///     return dbSettings.Value.[CollectionName]
+    /// </summary>
+    /// <returns></returns>
+    protected abstract string? GetCollectionName();
 }

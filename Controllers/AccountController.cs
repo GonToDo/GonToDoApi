@@ -13,40 +13,53 @@ public class AccountController(AccountService service) : ControllerBase
     public async Task<IActionResult> GetAll()
     {
         var accountModels = await service.GetAll();
-        return Ok(new Result("Success","Lấy toàn thông tin thành công.", new {accountModels}));
-    }    
-    
+        return Ok(new Root("Thành công", "Lấy toàn thông tin thành công.", new { accountModels }));
+    }
+
     [HttpGet("{id}")]
     public async Task<IActionResult> Get(string id)
     {
         var accountModel = await service.GetById(id);
-        return Ok(new Result("Success","Lấy thông tin thành công.", new {accountModel}));
+        return Ok(new Root("Thành công", "Lấy thông tin thành công.", new { accountModel }));
     }
 
     [HttpPost]
-    public async Task<IActionResult> Register(AccountModel.RegisterModel registerModel)
+    public async Task<IActionResult> Register(string fullName, string userName, string password)
     {
-        if (await service.CheckIfNameExists(registerModel.UserName))
+        if (await service.CheckIfNameExists(userName))
         {
             var accountModel = new AccountModel
             {
-                FullName = registerModel.FullName,
-                UserName = registerModel.UserName,
-                Password = registerModel.Password
+                FullName = fullName,
+                UserName = userName,
+                Password = password
             };
 
             await service.Create(accountModel);
-            return Ok(new Result("Success","Tạo thành công.", new {accountModel}));
+            return Ok(new Root("Thành công", "Tạo thành công.", new { accountModel }));
         }
-        return BadRequest(new Result("Error","Tên đăng nhập đã tồn tại."));
+
+        return Conflict(new Root("Xung đột", "Tên đăng nhập đã tồn tại."));
     }
 
     [HttpPost]
-    public async Task<IActionResult> Login(AccountModel.LoginModel loginModel)
+    public async Task<IActionResult> Login(string userName, string password)
     {
-        var accountModel = await service.FindByName(loginModel.UserName);
-        if (await service.CheckPassword(accountModel, loginModel.Password))
-            return Ok(new Result("Success","Đăng nhập thành công.", new {accountModel}));
-        return BadRequest(new Result("Error","Tên đăng nhập hoặc mật khẩu không đúng."));
+        var accountModel = await service.FindByName(userName);
+        if (await AccountService.CheckPassword(accountModel, password))
+            return Ok(new Root("Thành công", "Đăng nhập thành công.", new { accountModel }));
+        return Unauthorized(new Root("Không được phép", "Tên đăng nhập hoặc mật khẩu không đúng."));
+    }
+
+
+    [HttpPut("{id}")]
+    public async Task<IActionResult> Update(string id, [FromBody] AccountModel accountModel)
+    {
+        var model = await service.GetById(id);
+
+        // ReSharper disable once ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract
+        if (model == null) return BadRequest(new Root("Yêu cầu không hợp lệ", "Yêu cầu không hợp lệ"));
+        await service.Update(id, accountModel);
+        return Ok(new Root("Thành công", "Đăng nhập thành công."));
     }
 }
