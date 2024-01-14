@@ -22,6 +22,8 @@ public abstract class Program
         );
 
         builder.Services.AddTransient<AccountService>();
+        builder.Services.AddTransient<CategoryService>();
+        builder.Services.AddTransient<TaskService>();
 
         var app = builder.Build();
 

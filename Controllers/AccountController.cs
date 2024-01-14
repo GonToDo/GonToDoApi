@@ -62,4 +62,14 @@ public class AccountController(AccountService service) : ControllerBase
         await service.Update(id, accountModel);
         return Ok(new Root("Thành công", "Đăng nhập thành công."));
     }
+
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> Delete(string id)
+    {
+        var model = await service.GetById(id);
+        if (model == null) return BadRequest(new Root("Xóa không thành công", "Yêu cầu xóa không thành công"));
+
+        await service.Delete(id);
+        return Ok(new Root("Thành công", "Xóa thành công."));
+    }
 }

@@ -57,4 +57,9 @@ public class AccountService(IOptions<DataBaseSettings> dbSettings) : Service<Acc
         var user = await collection.Find(filter).FirstOrDefaultAsync();
         return user == null;
     }
+
+    public async Task Delete(string id)
+    {
+        await collection.DeleteOneAsync(a => a.Id == id);
+    }
 }

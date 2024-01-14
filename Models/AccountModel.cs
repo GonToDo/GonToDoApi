@@ -41,9 +41,7 @@ public class AccountModel
     [BsonDateTimeOptions(Kind = DateTimeKind.Utc)]
     public DateTime DateCreated { get; set; } = DateTime.UtcNow;
 
-    [BsonIgnoreIfNull]
-    [BsonElement("language")]
-    public string? Language { get; set; }
+    [BsonElement("language")] public Enums.Language Language { get; set; } = Enums.Language.Vi;
 
     [BsonIgnoreIfNull]
     [BsonElement("old_password")]
