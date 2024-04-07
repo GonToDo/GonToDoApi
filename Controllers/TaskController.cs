@@ -24,7 +24,7 @@ public class TaskController(TaskService service) : ControllerBase
     }
 
     [HttpGet("{taskId}")]
-    public async Task<IActionResult> GetByCategoryId(string taskId)
+    public async Task<IActionResult> GetByTaskId(string taskId)
     {
         var taskModel = await service.GetByTaskId(taskId);
         return Ok(new Root("Thành công", "Lấy thông tin thành công.", new { taskModel }));
