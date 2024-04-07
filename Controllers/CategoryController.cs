@@ -13,21 +13,21 @@ public class CategoryController(CategoryService service) : ControllerBase
     public async Task<IActionResult> GetAll()
     {
         var categoryModels = await service.GetAll();
-        return Ok(new Root("Thành công", "Lấy toàn thông tin thành công.", new { categoryModels }));
+        return Ok(categoryModels);
     }
 
     [HttpGet("{accountId}")]
     public async Task<IActionResult> GetByAccountId(string accountId)
     {
         var categoryModels = await service.GetByAccountId(accountId);
-        return Ok(new Root("Thành công", "Lấy thông tin thành công.", new { categoryModels }));
+        return Ok(categoryModels);
     }
 
     [HttpGet("{categoryId}")]
     public async Task<IActionResult> GetByCategoryId(string categoryId)
     {
         var categoryModel = await service.GetByCategoryId(categoryId);
-        return Ok(new Root("Thành công", "Lấy thông tin thành công.", new { categoryModel }));
+        return Ok(categoryModel);
     }
 
     [HttpPost]
@@ -36,10 +36,10 @@ public class CategoryController(CategoryService service) : ControllerBase
         if (await service.CheckIfCategoryNameExists(categoryModel.Name))
         {
             await service.Create(categoryModel);
-            return Ok(new Root("Thành công", "Tạo thành công.", new { categoryModel }));
+            return Ok(categoryModel);
         }
 
-        return Conflict(new Root("Xung đột", "Đã có thẻ này vui lòng thử lại."));
+        return Conflict("Đã có thẻ này vui lòng thử lại.");
     }
 
     [HttpPut("{categoryId}")]
@@ -48,9 +48,9 @@ public class CategoryController(CategoryService service) : ControllerBase
         var model = await service.GetByCategoryId(categoryId);
 
         // ReSharper disable once ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract
-        if (model == null) return BadRequest(new Root("Yêu cầu không hợp lệ", "Yêu cầu không hợp lệ"));
+        if (model == null) return BadRequest("Yêu cầu không hợp lệ");
         await service.Update(categoryId, categoryModel);
-        return Ok(new Root("Thành công", "Cập nhập thành công."));
+        return Ok("Cập nhập thành công.");
     }
 
 
@@ -58,9 +58,9 @@ public class CategoryController(CategoryService service) : ControllerBase
     public async Task<IActionResult> Delete(string categoryId)
     {
         var model = await service.GetByCategoryId(categoryId);
-        if (model == null) return BadRequest(new Root("Xóa không thành công", "Yêu cầu xóa không thành công"));
+        if (model == null) return BadRequest("Yêu cầu xóa không thành công");
 
         await service.Delete(categoryId);
-        return Ok(new Root("Thành công", "Xóa thành công."));
+        return Ok("Xóa thành công.");
     }
 }
