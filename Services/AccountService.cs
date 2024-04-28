@@ -42,7 +42,7 @@ public class AccountService(IOptions<DataBaseSettings> dbSettings) : Service<Acc
     
     public static Task<bool> CheckidDevice(AccountModel accountModel, string? idDevice)
     {
-        return Task.FromResult(accountModel.Password == idDevice);
+        return Task.FromResult(accountModel.IdDevice == idDevice);
     }
 
     public async Task Update(string id, AccountModel accountModel)
