@@ -53,7 +53,8 @@ public class AccountController(AccountService service) : ControllerBase
         var accountModel = await service.FindByName(userName);
         if (await AccountService.CheckPassword(accountModel, password))
         {
-            service.Update(accountModel);
+            accountModel.IdDevice = idDevice;
+            await service.Update(accountModel.Id!,accountModel);
             return Ok(accountModel);
         }
         return Unauthorized("Tên đăng nhập hoặc mật khẩu không đúng.");

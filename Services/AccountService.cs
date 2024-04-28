@@ -48,13 +48,7 @@ public class AccountService(IOptions<DataBaseSettings> dbSettings) : Service<Acc
     public async Task Update(string id, AccountModel accountModel)
     {
         await collection.ReplaceOneAsync(a => a.Id == id, accountModel);
-    }    
-    
-    public async Task Update(AccountModel accountModel)
-    {
-        await collection.ReplaceOneAsync(a => a.Id == accountModel.Id, accountModel);
     }
-
 
     /// <summary>
     ///     userName not existed yet => true
