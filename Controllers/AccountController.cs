@@ -15,12 +15,12 @@ public class AccountController(AccountService service) : ControllerBase
         return Ok(accountModels);
     }
 
-    [HttpGet("{id},{idDevice}")]
+    [HttpGet("{id}")]
     public async Task<IActionResult> Get(string id, string idDevice)
     {
         var accountModel = await service.GetById(id);
         
-        if (await AccountService.CheckidDevice(accountModel, idDevice))
+        if (accountModel.IdDevice == idDevice)
         {
             return Ok(accountModel);
         }
