@@ -15,7 +15,7 @@ public class AccountController(AccountService service) : ControllerBase
         return Ok(accountModels);
     }
 
-    [HttpGet("{id}")]
+    [HttpGet("{id},{idDevice}")]
     public async Task<IActionResult> Get(string id, string idDevice)
     {
         var accountModel = await service.GetById(id);
