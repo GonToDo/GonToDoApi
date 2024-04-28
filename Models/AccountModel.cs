@@ -32,10 +32,10 @@ public class AccountModel
     [BsonIgnoreIfNull]
     [BsonElement("email_address")]
     public string? EmailAddress { get; set; }
-
+    
     [BsonIgnoreIfNull]
-    [BsonElement("ip_address")]
-    public string? IpAddress { get; set; }
+    [BsonElement("id_device")]
+    public string? IdDevice { get; set; }
 
     [BsonElement("date_created")]
     [BsonDateTimeOptions(Kind = DateTimeKind.Utc)]

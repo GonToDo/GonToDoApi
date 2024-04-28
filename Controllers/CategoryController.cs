@@ -1,4 +1,3 @@
-using GonToDoApi.Core;
 using GonToDoApi.Models;
 using GonToDoApi.Services;
 using Microsoft.AspNetCore.Mvc;

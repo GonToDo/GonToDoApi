@@ -38,11 +38,21 @@ public class AccountService(IOptions<DataBaseSettings> dbSettings) : Service<Acc
     public static Task<bool> CheckPassword(AccountModel accountModel, string? password)
     {
         return Task.FromResult(accountModel.Password == password);
+    }    
+    
+    public static Task<bool> CheckidDevice(AccountModel accountModel, string? idDevice)
+    {
+        return Task.FromResult(accountModel.Password == idDevice);
     }
 
     public async Task Update(string id, AccountModel accountModel)
     {
         await collection.ReplaceOneAsync(a => a.Id == id, accountModel);
+    }    
+    
+    public async Task Update(AccountModel accountModel)
+    {
+        await collection.ReplaceOneAsync(a => a.Id == accountModel.Id, accountModel);
     }
 
 

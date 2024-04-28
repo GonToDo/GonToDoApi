@@ -1,4 +1,3 @@
-using GonToDoApi.Core;
 using GonToDoApi.Models;
 using GonToDoApi.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -17,14 +16,19 @@ public class AccountController(AccountService service) : ControllerBase
     }
 
     [HttpGet("{id}")]
-    public async Task<IActionResult> Get(string id)
+    public async Task<IActionResult> Get(string id, string idDevice)
     {
         var accountModel = await service.GetById(id);
-        return Ok(accountModel);
+        
+        if (await AccountService.CheckidDevice(accountModel, idDevice))
+        {
+            return Ok(accountModel);
+        }
+        return Unauthorized("không thể đăng nhập.");
     }
 
     [HttpPost]
-    public async Task<IActionResult> Register(string fullName, string userName, string password)
+    public async Task<IActionResult> Register(string fullName, string userName, string password, string idDevice)
     {
         if (await service.CheckIfNameExists(userName))
         {
@@ -32,7 +36,8 @@ public class AccountController(AccountService service) : ControllerBase
             {
                 FullName = fullName,
                 UserName = userName,
-                Password = password
+                Password = password,
+                IdDevice = idDevice
             };
 
             await service.Create(accountModel);
@@ -43,11 +48,14 @@ public class AccountController(AccountService service) : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> Login(string userName, string password)
+    public async Task<IActionResult> Login(string userName, string password, string idDevice)
     {
         var accountModel = await service.FindByName(userName);
         if (await AccountService.CheckPassword(accountModel, password))
+        {
+            service.Update(accountModel);
             return Ok(accountModel);
+        }
         return Unauthorized("Tên đăng nhập hoặc mật khẩu không đúng.");
     }
 
